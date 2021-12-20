@@ -1,0 +1,16 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ECSTaskManagement",
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Principal": {
+                "Service": [
+                    "eks.amazonaws.com",
+                    "eks-fargate-pods.amazonaws.com"
+                ]
+            }
+        }
+    ]
+}
