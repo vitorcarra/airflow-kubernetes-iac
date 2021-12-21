@@ -1,19 +1,3 @@
-# resource "aws_iam_role" "eks_service_role" {
-#   assume_role_policy = "${file("${path.module}/policy/eks_service_policy.json")}"
-#   force_detach_policies = false
-#   max_session_duration  = 3600
-#   name                  = "eks-cluster-service-role"
-#   path                  = "/"
-#   tags = {
-#     "Name"  = "eks-cluster/ServiceRole"
-#   }
-# }
-
-# resource "aws_iam_role_policy_attachment" "eks-role-attach" {
-#   role       = aws_iam_role.eks_service_role.name
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-# }
-
 module "eks" {
   source = "terraform-aws-modules/eks/aws"
 
@@ -24,7 +8,6 @@ module "eks" {
   subnets         = [local.vpc.private_subnets[0], local.vpc.public_subnets[1]]
   fargate_subnets = [local.vpc.private_subnets[2]]
 
-  //cluster_iam_role_name = aws_iam_role.eks_service_role.name
   cluster_log_retention_in_days = 3
 
   cluster_endpoint_public_access  = true
@@ -82,13 +65,9 @@ resource "kubernetes_secret" "airflow_db_credentials" {
     namespace = kubernetes_namespace.airflow.metadata[0].name
   }
 
-    # data = {
-    #   "connection" = "postgresql://${var.airflowdb_username}:${var.airflowdb_password}@${var.airflowdb_host}/${var.airflowdb_dbname}"
-    # }
-
-    data = {
-      "postgresql-password" = "${var.airflowdb_password}"
-    }
+  data = {
+    "postgresql-password" = "${var.airflowdb_password}"
+  }
 }
 
 #############
